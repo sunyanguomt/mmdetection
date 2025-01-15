@@ -138,7 +138,7 @@ class AnchorHead(BaseDenseHead, BBoxTestMixin):
         """
         return multi_apply(self.forward_single, feats)
 
-    def get_anchors(self, featmap_sizes, img_metas, device='cuda'):
+    def get_anchors(self, featmap_sizes, img_metas, device='musa'):
         """Get anchors according to feature map sizes.
 
         Args:

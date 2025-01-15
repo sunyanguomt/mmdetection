@@ -63,7 +63,7 @@ def sigmoid_focal_loss(pred,
                        alpha=0.25,
                        reduction='mean',
                        avg_factor=None):
-    r"""A warpper of cuda version `Focal Loss
+    r"""A warpper of musa version `Focal Loss
     <https://arxiv.org/abs/1708.02002>`_.
 
     Args:
@@ -159,7 +159,7 @@ class FocalLoss(nn.Module):
         reduction = (
             reduction_override if reduction_override else self.reduction)
         if self.use_sigmoid:
-            if torch.cuda.is_available() and pred.is_cuda:
+            if torch.musa.is_available() and pred.is_musa:
                 calculate_loss_func = sigmoid_focal_loss
             else:
                 num_classes = pred.size(1)

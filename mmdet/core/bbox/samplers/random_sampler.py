@@ -46,8 +46,8 @@ class RandomSampler(BaseSampler):
 
         is_tensor = isinstance(gallery, torch.Tensor)
         if not is_tensor:
-            if torch.cuda.is_available():
-                device = torch.cuda.current_device()
+            if torch.musa.is_available():
+                device = torch.musa.current_device()
             else:
                 device = 'cpu'
             gallery = torch.tensor(gallery, dtype=torch.long, device=device)

@@ -16,25 +16,25 @@ DEBUG_COMPLETED_TIME = bool(os.environ.get('DEBUG_COMPLETED_TIME', False))
 async def completed(trace_name='',
                     name='',
                     sleep_interval=0.05,
-                    streams: List[torch.cuda.Stream] = None):
-    """Async context manager that waits for work to complete on given CUDA
+                    streams: List[torch.musa.Stream] = None):
+    """Async context manager that waits for work to complete on given MUSA
     streams."""
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         yield
         return
 
-    stream_before_context_switch = torch.cuda.current_stream()
+    stream_before_context_switch = torch.musa.current_stream()
     if not streams:
         streams = [stream_before_context_switch]
     else:
         streams = [s if s else stream_before_context_switch for s in streams]
 
     end_events = [
-        torch.cuda.Event(enable_timing=DEBUG_COMPLETED_TIME) for _ in streams
+        torch.musa.Event(enable_timing=DEBUG_COMPLETED_TIME) for _ in streams
     ]
 
     if DEBUG_COMPLETED_TIME:
-        start = torch.cuda.Event(enable_timing=True)
+        start = torch.musa.Event(enable_timing=True)
         stream_before_context_switch.record_event(start)
 
         cpu_start = time.monotonic()
@@ -43,7 +43,7 @@ async def completed(trace_name='',
     try:
         yield
     finally:
-        current_stream = torch.cuda.current_stream()
+        current_stream = torch.musa.current_stream()
         assert current_stream == stream_before_context_switch
 
         if DEBUG_COMPLETED_TIME:
@@ -62,7 +62,7 @@ async def completed(trace_name='',
         are_done = [e.query() for e in end_events]
         logger.debug('%s %s completed: %s streams: %s', trace_name, name,
                      are_done, streams)
-        with torch.cuda.stream(stream_before_context_switch):
+        with torch.musa.stream(stream_before_context_switch):
             while not all(are_done):
                 await asyncio.sleep(sleep_interval)
                 are_done = [e.query() for e in end_events]
@@ -74,7 +74,7 @@ async def completed(trace_name='',
                     streams,
                 )
 
-        current_stream = torch.cuda.current_stream()
+        current_stream = torch.musa.current_stream()
         assert current_stream == stream_before_context_switch
 
         if DEBUG_COMPLETED_TIME:
@@ -97,22 +97,22 @@ async def concurrent(streamqueue: asyncio.Queue,
 
     Queue tasks define the pool of streams used for concurrent execution.
     """
-    if not torch.cuda.is_available():
+    if not torch.musa.is_available():
         yield
         return
 
-    initial_stream = torch.cuda.current_stream()
+    initial_stream = torch.musa.current_stream()
 
-    with torch.cuda.stream(initial_stream):
+    with torch.musa.stream(initial_stream):
         stream = await streamqueue.get()
-        assert isinstance(stream, torch.cuda.Stream)
+        assert isinstance(stream, torch.musa.Stream)
 
         try:
-            with torch.cuda.stream(stream):
+            with torch.musa.stream(stream):
                 logger.debug('%s %s is starting, stream: %s', trace_name, name,
                              stream)
                 yield
-                current = torch.cuda.current_stream()
+                current = torch.musa.current_stream()
                 assert current == stream
                 logger.debug('%s %s has finished, stream: %s', trace_name,
                              name, stream)

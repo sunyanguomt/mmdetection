@@ -114,9 +114,9 @@ class ONNXRuntimeDetector(DeployBaseDetector):
         sess = ort.InferenceSession(onnx_file, session_options)
         providers = ['CPUExecutionProvider']
         options = [{}]
-        is_cuda_available = ort.get_device() == 'GPU'
-        if is_cuda_available:
-            providers.insert(0, 'CUDAExecutionProvider')
+        is_musa_available = ort.get_device() == 'GPU'
+        if is_musa_available:
+            providers.insert(0, 'MUSAExecutionProvider')
             options.insert(0, {'device_id': device_id})
 
         sess.set_providers(providers, options)
@@ -124,13 +124,13 @@ class ONNXRuntimeDetector(DeployBaseDetector):
         self.sess = sess
         self.io_binding = sess.io_binding()
         self.output_names = [_.name for _ in sess.get_outputs()]
-        self.is_cuda_available = is_cuda_available
+        self.is_musa_available = is_musa_available
 
     def forward_test(self, imgs, img_metas, **kwargs):
         input_data = imgs[0]
         # set io binding for inputs/outputs
-        device_type = 'cuda' if self.is_cuda_available else 'cpu'
-        if not self.is_cuda_available:
+        device_type = 'musa' if self.is_musa_available else 'cpu'
+        if not self.is_musa_available:
             input_data = input_data.cpu()
         self.io_binding.bind_input(
             name='input',
@@ -175,7 +175,7 @@ class TensorRTDetector(DeployBaseDetector):
 
     def forward_test(self, imgs, img_metas, **kwargs):
         input_data = imgs[0].contiguous()
-        with torch.cuda.device(self.device_id), torch.no_grad():
+        with torch.musa.device(self.device_id), torch.no_grad():
             outputs = self.model({'input': input_data})
             outputs = [outputs[name] for name in self.model.output_names]
         outputs = [out.detach().cpu().numpy() for out in outputs]

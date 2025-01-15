@@ -71,9 +71,9 @@ class UniformAssigner(BaseAssigner):
             bbox_xyxy_to_cxcywh(anchor), bbox_xyxy_to_cxcywh(gt_bboxes), p=1)
 
         # We found that topk function has different results in cpu and
-        # cuda mode. In order to ensure consistency with the source code,
+        # musa mode. In order to ensure consistency with the source code,
         # we also use cpu mode.
-        # TODO: Check whether the performance of cpu and cuda are the same.
+        # TODO: Check whether the performance of cpu and musa are the same.
         C = cost_bbox.cpu()
         C1 = cost_bbox_anchors.cpu()
 

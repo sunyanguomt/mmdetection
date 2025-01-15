@@ -649,11 +649,11 @@ class ResNet(BaseModule):
         freezed."""
         super(ResNet, self).train(mode)
         self._freeze_stages()
-        if mode and self.norm_eval:
-            for m in self.modules():
-                # trick: eval have effect on BatchNorm only
-                if isinstance(m, _BatchNorm):
-                    m.eval()
+        # if mode and self.norm_eval:
+            # for m in self.modules():
+            #     # trick: eval have effect on BatchNorm only
+            #     if isinstance(m, _BatchNorm):
+            #         m.eval()
 
 
 @BACKBONES.register_module()

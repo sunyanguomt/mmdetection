@@ -13,7 +13,7 @@ from mmdet.datasets.pipelines import Compose
 from mmdet.models import build_detector
 
 
-def init_detector(config, checkpoint=None, device='cuda:0', cfg_options=None):
+def init_detector(config, checkpoint=None, device='musa:0', cfg_options=None):
     """Initialize a detector from config file.
 
     Args:
@@ -133,7 +133,7 @@ def inference_detector(model, imgs):
     # just get the actual data from DataContainer
     data['img_metas'] = [img_metas.data[0] for img_metas in data['img_metas']]
     data['img'] = [img.data[0] for img in data['img']]
-    if next(model.parameters()).is_cuda:
+    if next(model.parameters()).is_musa:
         # scatter to specified GPU
         data = scatter(data, [device])[0]
     else:
@@ -193,7 +193,7 @@ async def async_inference_detector(model, imgs):
     # just get the actual data from DataContainer
     data['img_metas'] = [img_metas.data[0] for img_metas in data['img_metas']]
     data['img'] = [img.data[0] for img in data['img']]
-    if next(model.parameters()).is_cuda:
+    if next(model.parameters()).is_musa:
         # scatter to specified GPU
         data = scatter(data, [device])[0]
     else:

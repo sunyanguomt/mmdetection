@@ -236,7 +236,7 @@ class GuidedAnchorHead(AnchorHead):
     def forward(self, feats):
         return multi_apply(self.forward_single, feats)
 
-    def get_sampled_approxs(self, featmap_sizes, img_metas, device='cuda'):
+    def get_sampled_approxs(self, featmap_sizes, img_metas, device='musa'):
         """Get sampled approxs and inside flags according to feature map sizes.
 
         Args:
@@ -292,7 +292,7 @@ class GuidedAnchorHead(AnchorHead):
                     loc_preds,
                     img_metas,
                     use_loc_filter=False,
-                    device='cuda'):
+                    device='musa'):
         """Get squares according to feature map sizes and guided anchors.
 
         Args:

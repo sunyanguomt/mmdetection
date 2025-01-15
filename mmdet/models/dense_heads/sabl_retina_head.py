@@ -196,7 +196,7 @@ class SABLRetinaHead(BaseDenseHead, BBoxTestMixin):
     def forward(self, feats):
         return multi_apply(self.forward_single, feats)
 
-    def get_anchors(self, featmap_sizes, img_metas, device='cuda'):
+    def get_anchors(self, featmap_sizes, img_metas, device='musa'):
         """Get squares according to feature map sizes and guided anchors.
 
         Args:

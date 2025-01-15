@@ -212,7 +212,7 @@ class AnchorGenerator:
         else:
             return yy, xx
 
-    def grid_priors(self, featmap_sizes, device='cuda'):
+    def grid_priors(self, featmap_sizes, device='musa'):
         """Generate grid anchors in multiple feature levels.
 
         Args:
@@ -235,7 +235,7 @@ class AnchorGenerator:
             multi_level_anchors.append(anchors)
         return multi_level_anchors
 
-    def single_level_grid_priors(self, featmap_size, level_idx, device='cuda'):
+    def single_level_grid_priors(self, featmap_size, level_idx, device='musa'):
         """Generate grid anchors of a single level.
 
         Note:
@@ -245,7 +245,7 @@ class AnchorGenerator:
             featmap_size (tuple[int]): Size of the feature maps.
             level_idx (int): The index of corresponding feature map level.
             device (str, optional): The device the tensor will be put on.
-                Defaults to 'cuda'.
+                Defaults to 'musa'.
 
         Returns:
             torch.Tensor: Anchors in the overall feature maps.
@@ -275,7 +275,7 @@ class AnchorGenerator:
                       featmap_size,
                       level_idx,
                       dtype=torch.float32,
-                      device='cuda'):
+                      device='musa'):
         """Generate sparse anchors according to the ``prior_idxs``.
 
         Args:
@@ -305,7 +305,7 @@ class AnchorGenerator:
 
         return priors
 
-    def grid_anchors(self, featmap_sizes, device='cuda'):
+    def grid_anchors(self, featmap_sizes, device='musa'):
         """Generate grid anchors in multiple feature levels.
 
         Args:
@@ -338,7 +338,7 @@ class AnchorGenerator:
                                   base_anchors,
                                   featmap_size,
                                   stride=(16, 16),
-                                  device='cuda'):
+                                  device='musa'):
         """Generate grid anchors of a single level.
 
         Note:
@@ -350,7 +350,7 @@ class AnchorGenerator:
             stride (tuple[int], optional): Stride of the feature map in order
                 (w, h). Defaults to (16, 16).
             device (str, optional): Device the tensor will be put on.
-                Defaults to 'cuda'.
+                Defaults to 'musa'.
 
         Returns:
             torch.Tensor: Anchors in the overall feature maps.
@@ -379,7 +379,7 @@ class AnchorGenerator:
         # then (0, 1), (0, 2), ...
         return all_anchors
 
-    def valid_flags(self, featmap_sizes, pad_shape, device='cuda'):
+    def valid_flags(self, featmap_sizes, pad_shape, device='musa'):
         """Generate valid flags of anchors in multiple feature levels.
 
         Args:
@@ -410,7 +410,7 @@ class AnchorGenerator:
                                  featmap_size,
                                  valid_size,
                                  num_base_anchors,
-                                 device='cuda'):
+                                 device='musa'):
         """Generate the valid flags of anchor in a single feature map.
 
         Args:
@@ -419,7 +419,7 @@ class AnchorGenerator:
             valid_size (tuple[int]): The valid size of the feature maps.
             num_base_anchors (int): The number of base anchors.
             device (str, optional): Device where the flags will be put on.
-                Defaults to 'cuda'.
+                Defaults to 'musa'.
 
         Returns:
             torch.Tensor: The valid flags of each anchor in a single level \
@@ -775,7 +775,7 @@ class YOLOAnchorGenerator(AnchorGenerator):
 
         return base_anchors
 
-    def responsible_flags(self, featmap_sizes, gt_bboxes, device='cuda'):
+    def responsible_flags(self, featmap_sizes, gt_bboxes, device='musa'):
         """Generate responsible anchor flags of grid cells in multiple scales.
 
         Args:
@@ -805,7 +805,7 @@ class YOLOAnchorGenerator(AnchorGenerator):
                                        gt_bboxes,
                                        stride,
                                        num_base_anchors,
-                                       device='cuda'):
+                                       device='musa'):
         """Generate the responsible flags of anchor in a single feature map.
 
         Args:
@@ -814,7 +814,7 @@ class YOLOAnchorGenerator(AnchorGenerator):
             stride (tuple(int)): stride of current level
             num_base_anchors (int): The number of base anchors.
             device (str, optional): Device where the flags will be put on.
-                Defaults to 'cuda'.
+                Defaults to 'musa'.
 
         Returns:
             torch.Tensor: The valid flags of each anchor in a single level \

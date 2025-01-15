@@ -72,11 +72,11 @@ class KnowledgeDistillationSingleStageDetector(SingleStageDetector):
                                               gt_bboxes_ignore)
         return losses
 
-    def cuda(self, device=None):
+    def musa(self, device=None):
         """Since teacher_model is registered as a plain object, it is necessary
-        to put the teacher model to cuda when calling cuda function."""
-        self.teacher_model.cuda(device=device)
-        return super().cuda(device=device)
+        to put the teacher model to musa when calling musa function."""
+        self.teacher_model.musa(device=device)
+        return super().musa(device=device)
 
     def train(self, mode=True):
         """Set the same train mode for teacher and student model."""
